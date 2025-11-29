@@ -1,0 +1,12 @@
+{
+  "name": "ejerciciosjavascriptparteuno",
+  "version": "1.0.0",
+  "main": "ejercicios.js",
+  "scripts": {
+    "dev": "nodemon ejercicios.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

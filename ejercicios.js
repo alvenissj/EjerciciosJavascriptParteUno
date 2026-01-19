@@ -1337,12 +1337,3 @@
 // console.log(lengthOfLongestSubstring("pwwkew")); // → 3
 
 // ******************************************
-fgytdfhgy
-hfujhgjfhuyg
-uytfhgchgcc
-hgcyhg
-fytuytfytfyf
-dytffyfdytft
-ytfytfytf
-d56fdrdytdty
-dytfytfd

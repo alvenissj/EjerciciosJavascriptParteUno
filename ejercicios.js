@@ -8,7 +8,9 @@
 
 // function joinArray(arregloUno, arregloDos) {
 //   if (!Array.isArray(arregloUno) || !Array.isArray(arregloDos)) {
-//     throw new TypeError("Los argumento de la función DEBEN ser arreglos ordenados");
+//     throw new TypeError(
+//       "Los argumento de la función DEBEN ser arreglos ordenados"
+//     );
 //   }
 
 //   // CREAMOS LAS COPIAS CON EL SPREAD OPERATOR DESPUÉS DE VALIDAR SI LOS ARGUMENTOS SON ARREGLOS
@@ -464,7 +466,6 @@
 //   }
 
 //   distancias[nodoInicial] = 0;
-
 //   while (true) {
 //     let nodoActual = null;
 //     for (let nodo in grafo) {
@@ -686,7 +687,7 @@
 //       acc[paddockTypeId] += area;
 //       return acc;
 //     },
-//     {}
+//     {},
 //   );
 
 //   const mostrarPaddocks = namePaddocks.map(({ id, name }) => ({
@@ -1263,18 +1264,41 @@
 //   "{": "}",
 // };
 
-// function isValid(objeto, caracteres) {
+// PRIMERA SOLUCIÓN:
+
+// function isValid(isObjeto, caracteres) {
 //   // Si la longitud es impar, es imposible que sea válida
 //   if (caracteres.length % 2 !== 0) return false;
 //   let stack = [];
-
-//   for (const char of caracteres) {
-//     if (char in objeto) {
-//       stack.push(char);
+//   for (let char of caracteres) {
+//     if (char in isObjeto) {
+//       stack = [...stack, char];
 //       continue;
 //     }
-//     const last = stack.pop();
-//     if (objeto[last] !== char) return false;
+//     const last = stack.at(-1);
+//     if (isObjeto[last] !== char) return false;
+//     stack = stack.slice(0, -1);
+//   }
+
+//   return stack.length === 0;
+// }
+
+// const print = isValid(pairs, "{[]}");
+// console.log(print);
+
+// SEGUNDA SOLUCIÓN:
+
+// function isValid(isObjeto, caracteres) {
+//   if (caracteres.length % 2 !== 0) return false;
+//   let stack = [];
+//   for (let char of caracteres) {
+//     if (char in isObjeto) {
+//       stack.push(char);
+//     } else {
+//       const last = stack.at(-1);
+//       if (isObjeto[last] !== char) return false;
+//       stack.pop();
+//     }
 //   }
 
 //   return stack.length === 0;
@@ -1285,64 +1309,62 @@
 
 // ****************************************************************
 
-// **Dado un string "caracteres", implemente un algoritmo óptimo que determine la longitud de la subcadena más larga que no contiene caracteres repetidos.
+// Desarrollar una función que implemente el algoritmo de codificación Run-Length Encoding (RLE), la cual reciba una cadena de texto como parámetro y retorne una estructura que represente cada carácter junto con la cantidad de veces consecutivas que aparece en la cadena original. La solución debe utilizar programación de orden superior y evitar estructuras imperativas explícitas como bucles for o while.
 
-// Su solución debe tener complejidad temporal O(n) y utilizar únicamente memoria adicional O(k), donde k es el tamaño del alfabeto utilizado.
-// Debe demostrar una implementación robusta, limpia y fácilmente mantenible, que incorpore validaciones y un enfoque profesional.**
-
-// Ejemplo:
-// Entrada: "abcabcbb"
-// Salida: 3
-// (Subcadena más larga sin repetir: "abc")
-
-/**
- * Retorna la longitud de la subcadena más larga sin caracteres repetidos.
- * Enfoque: Sliding Window + HashMap → O(n)
- */
-// function lengthOfLongestSubstring(caracteres) {
-//   if (typeof caracteres !== "string") {
-//     throw new TypeError(
-//       `El argumento debe ser un string. Se recibió: ${typeof caracteres}`
-//     );
-//   }
-
-//   const map = new Map(); // almacena la última posición de cada carácter
-//   let left = 0; // inicio de la ventana -->
-//   let maxLength = 0; // mejor resultado encontrado -->
-//   const n = caracteres.length; // 8
-
-//   for (let i = 0; i < n; i++) {
-//     const char = caracteres[i]; //b
-//     if (map.has(char) && map.get(char) >= left) {
-//       left = map.get(char) + 1;
+// function runLengthEncode(str) {
+//   return [...str].reduce((acc, char) => {
+//     if (acc.length === 0) {
+//       return [[char, 1]];
 //     }
-//     map.set(char, i);
 
-//     // actualizar el máximo
-//     maxLength = Math.max(maxLength, i - left + 1); // (3)
-//   }
+//     const [lastChar, lastCount] = acc[acc.length - 1];
+//     if (lastChar === char) {
+//       return [...acc.slice(0, -1), [lastChar, lastCount + 1]];
+//     }
 
-//   return maxLength;
+//     return [...acc, [char, 1]];
+//   }, []);
 // }
 
-// // Ejemplo de uso:
-// try {
-//   const print = lengthOfLongestSubstring("abcabcbb");
-//   console.log(print); // → 3
-// } catch (err) {
-//   console.error(err.message);
+// const print = runLengthEncode("aaaaabbbcc");
+// console.log(print);
+
+//********************************************************
+
+//  Desarrollar una función que implemente el algoritmo de codificación Run-Length Encoding (RLE), la cual reciba una cadena de texto como parámetro y retorne una estructura que represente cada carácter junto con la cantidad de veces consecutivas que aparece en la cadena original. La solución debe utilizar programación de orden superior y evitar estructuras imperativas explícitas como bucles for o while.
+// OUTPUT ESPERADO: [ ['a', 5], ['b', 3], ['c', 2] ]
+
+// PRIMERA SOLUCIÓN:
+// function runLengthEncode(str) {
+//   return [...str].reduce((acc, char) => {
+//     if (acc.length === 0) {
+//       return [[char, 1]];
+//     }
+//     const [lastChar, lastCount] = acc.at(-1);
+//     if (lastChar === char) {
+//       return [...acc.slice(0, -1), [lastChar, lastCount + 1]];
+//     }
+//     return [...acc, [char, 1]];
+//   }, []);
 // }
 
-// console.log(lengthOfLongestSubstring("bbbbb")); // → 1
-// console.log(lengthOfLongestSubstring("pwwkew")); // → 3
+// const print = runLengthEncode("aaaaabbbcc");
+// console.log(print);
 
-// ******************************************
-fgytdfhgy
-hfujhgjfhuyg
-uytfhgchgcc
-hgcyhg
-fytuytfytfyf
-dytffyfdytft
-ytfytfytf
-d56fdrdytdty
-dytfytfd
+// SEGUNDA SOLUCIÓN:
+// function runLengthEncode(str) {
+//   return [...str].reduce((acc, char) => {
+//     const last = acc.at(-1);
+
+//     if (!last || last[0] !== char) {
+//       acc.push([char, 1]);
+//     } else {
+//       last[1]++;
+//     }
+
+//     return acc;
+//   }, []);
+// }
+
+// const print = runLengthEncode("aaaaabbbcc");
+// console.log(print);

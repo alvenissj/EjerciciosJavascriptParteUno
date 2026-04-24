@@ -470,7 +470,7 @@
 //     let nodoActual = null;
 //     for (let nodo in grafo) {
 //       if (
-//         !visitados[nodo] &&
+//         !visitados[nodo] && distancias[nodo] < Infinity &&
 //         (nodoActual === null || distancias[nodoActual] > distancias[nodo])
 //       ) {
 //         nodoActual = nodo;
@@ -768,9 +768,7 @@
 
 //   const groupPurchases = filterPurchases.reduce(
 //     (acc, { category, amount, quantity }) => {
-//       if (!acc[category]) {
-//         acc[category] = { TotalAmount: 0, TotalQuantity: 0 };
-//       }
+//       acc[category] ??= { TotalAmount: 0, TotalQuantity: 0 };
 //       acc[category].TotalAmount += amount;
 //       acc[category].TotalQuantity += quantity;
 //       return acc;
@@ -885,32 +883,70 @@
 // console.log(print);
 
 // ****************************************************************
+// Trabajas en el equipo de backend de una plataforma de e-commerce. El equipo de producto necesita un motor de recomendaciones que sugiera los productos más relevantes a los usuarios basándose en múltiples señales: calidad percibida, comportamiento de compra y estado del inventario.
 
-// La compañía requiere diseñar un módulo que permita identificar y seleccionar los productos más relevantes para mostrar en la sección “Recomendados para ti”.
-// La función debe procesar una lista de productos y generar un subconjunto optimizado basado en un puntaje de recomendación obtenido por criterios de calidad, confiabilidad y comportamiento del consumidor.
+// Tienes disponible un array de productos con la siguiente estructura:
+// {
+//   id: number,
+//   category: string,
+//   rating: number,          // escala 1.0 - 5.0
+//   reviews: number,         // cantidad total de reseñas
+//   stock: number,           // unidades disponibles
+//   addToCart: number,       // veces agregado al carrito
+//   wishList: number,        // veces guardado en wishlist
+//   conversionRate: number,  // tasa de conversión expresada en decimal (ej: 0.25 = 25%)
+//   isNew: boolean           // indica si es un producto recién lanzado
+// }
 
-//La función DEBE:
-// 1. Evaluar la calidad del producto
-// 2.- Considerar el rating utilizando un promedio ponderado por número de reviews.
-// 3.- Rechazar productos con reviews muy bajos (< 5).
-// 4.- Considerar señales reales de intención de compra
+// Requerimientos funcionales:
+// Implementa la función getRecommendedProducts(arrProducts, minReviews, minStock) que recibe el array de productos y dos umbrales mínimos como parámetros, y retorna los 10 productos con mayor score de recomendación siguiendo este pipeline:
+// 1. Elegibilidad:
+// Descarta productos que no cumplan ambas condiciones simultáneamente:
+// - Cantidad de reseñas mayor o igual al umbral minReviews
+// - Stock disponible mayor o igual al umbral minStock
 
-// A cada producto se le asignará un puntaje adicional basado en:
-// 1.- Número de veces añadido al carrito (addToCart)
-// 2.- Número de veces añadido a wishlist (wishList)
-// 3.- Tasa de conversión estimada (conversionRate)
-// 4.- Controlar el volumen de inventario
+// 2. Score de calidad ponderada:
+// Para cada producto elegible calcula un weightedRating que combine su rating con el volumen de reseñas que lo respaldan. El volumen debe tener rendimientos decrecientes: la diferencia entre 10 y 100 reseñas debe pesar más que la diferencia entre 1,000 y 1,100.
 
-// Solo se recomendarán productos con:
-// 1.- stock >= MIN_STOCK_THRESHOLD (por ejemplo, 10 unidades)
-// 2.- Manejo de productos nuevos
+// 3. Score de engagement:
+// Calcula un engagementScore que refleje el comportamiento real de los usuarios con el producto usando tres señales con los siguientes pesos:
 
-// Los productos nuevos podrán ser recomendados solo si:
-// 1.- Tienen engagement inicial (clicks, vistas, etc.)
-// 2.- Cumplen con un score mínimo de relevancia
-// 3.- Retornar solo los productos con mayor score
-// 4.- Ordenados por recommendationScore
-// 5.- Limitados a un máximo de 10
+// - Veces agregado al carrito: 40%
+// - Veces guardado en wishlist: 20%
+// - Tasa de conversión: 40%
+
+// Ten en cuenta que las señales deben ser numéricamente comparables entre sí antes de aplicar los pesos.
+
+// 4. Boost para productos nuevos:
+// Los productos marcados como isNew deben recibir un incremento del 15% sobre su score final para compensar la desventaja estadística de tener menos historial acumulado.
+
+// 5. Score final:
+// Combina weightedRating y engagementScore con igual peso (50% cada uno) y aplica el boost si corresponde. El score final debe redondearse a 2 decimales y ser de tipo number.
+
+// 6. Resultado
+// Retorna los 10 productos con mayor score en orden descendente. Cada producto en el resultado debe conservar todas sus propiedades originales más la propiedad recommendationScore.
+
+// Restricciones técnicas:
+
+// La función no debe mutar el array original
+// Usa exclusivamente métodos funcionales del array: filter, map, sort, slice
+// Los pesos y umbrales deben definirse como constantes fuera de la función
+// El score final debe ser de tipo number, no string
+
+// Salida esperada: 
+// [
+//   {
+//     id: 17,
+//     category: "Beauty",
+//     rating: 4.9,
+//     reviews: 1200,
+//     // ...resto de propiedades originales
+//     recommendationScore: 847.23
+//   },
+
+//   // ...9 productos más en orden descendente
+// ]
+
 
 // const products = [
 //   {
@@ -1162,12 +1198,10 @@
 //     };
 //   });
 
-//   // 3. Ordenar por score
 //   const sorted = scoredProducts.sort(
 //     (a, b) => b.recommendationScore - a.recommendationScore
 //   );
 
-//   // 4. Tomar top 10
 //   return sorted.slice(0, 10);
 // }
 

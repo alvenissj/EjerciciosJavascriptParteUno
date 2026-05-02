@@ -153,17 +153,11 @@
 // ****************************************************************
 
 // Implemente una función denominada insertionSort que ordene un arreglo de números en forma ascendente utilizando el algoritmo Insertion Sort.
-
 // La función debe:
-
 // Validar que el parámetro recibido sea un arreglo y lanzar InvalidTypeArrayError si no lo es.
-
 // Verificar que el arreglo no esté vacío y lanzar EmptyArrayError en caso contrario.
-
 // Aplicar correctamente el algoritmo para insertar cada elemento en su posición correspondiente dentro de un nuevo arreglo ordenado.
-
 // Retornar el arreglo resultante y manejar las excepciones mediante un bloque try...catch.
-
 // El objetivo es evaluar la correcta aplicación del algoritmo de inserción y el manejo robusto de errores personalizados.
 
 // const isArrayNumber = [5, 3, 4, 1, 2];
@@ -196,7 +190,7 @@
 //       arrElements[posValue] = arrElements[posValue - 1];
 //       posValue--;
 //     }
-//     arrElements[posValue] = currentValue;
+//     arrElements[posValue] = currentValue; // refresh
 //   }
 //   return arrElements;
 // }
@@ -221,7 +215,6 @@
 // ****************************************************************
 
 // Implemente una función llamada selectionSort que ordene un arreglo de números en forma ascendente utilizando el algoritmo Selection Sort. La función debe validar que el argumento sea un arreglo y que no esté vacío, lanzando los errores personalizados InvalidTypeError y EmptyError según corresponda.
-
 // El objetivo del ejercicio es demostrar la correcta aplicación del algoritmo de selección, identificando el valor mínimo en cada iteración y realizando los intercambios necesarios, además de garantizar un manejo robusto de errores y un procesamiento seguro de los datos de entrada.
 
 // const isArrayNumber = [80, 4, 20, 3, 1, 5, 2];
@@ -325,9 +318,8 @@
 //   if (!Number.isInteger(target)) throw new NumberIntegerError(target);
 
 //   const n = arreglo.length;
-//   let band = false;
 //   let i = 0;
-//   while (band === false && i < n) {
+//   while (i < n) {
 //     if (arreglo[i] === target) return i;
 //     i++;
 //   }
@@ -459,23 +451,26 @@
 //   let visitados = {};
 //   let prev = {};
 
-//   for (let nodo in grafo) {
-//     distancias[nodo] = Infinity;
-//     visitados[nodo] = false;
-//     prev[nodo] = null;
-//   }
+//   const nodes = Object.keys(grafo);
+//   nodes.forEach((node) => {
+//     distancias[node] = Infinity;
+//     visitados[node] = false;
+//     prev[node] = null;
+//   });
 
 //   distancias[nodoInicial] = 0;
 //   while (true) {
 //     let nodoActual = null;
-//     for (let nodo in grafo) {
+//     nodes.forEach((nodo) => {
 //       if (
-//         !visitados[nodo] && distancias[nodo] < Infinity &&
+//         !visitados[nodo] &&
+//         distancias[nodo] < Infinity &&
 //         (nodoActual === null || distancias[nodoActual] > distancias[nodo])
 //       ) {
 //         nodoActual = nodo;
 //       }
-//     }
+//     });
+
 //     if (nodoActual === null) break;
 //     visitados[nodoActual] = true;
 
@@ -737,69 +732,63 @@
 // ****************************************************************
 
 // Dada una lista de compras donde cada elemento contiene una categoría, el monto pagado y la cantidad de productos adquiridos, implementa una función que:
-//1.- Filtre todas las compras cuya cantidad (quantity) sea estrictamente mayor que un valor mínimo especificado.
-//2.- Agrupe las compras resultantes por categoría.
-//3.- Calcule para cada categoría:
-// - El monto total acumulado (totalAmount)
-// - La cantidad total acumulada de productos (totalQuantity)
+// //1.- Filtre todas las compras cuya cantidad (quantity) sea estrictamente mayor que un valor mínimo especificado.
+// //2.- Agrupe las compras resultantes por categoría.
+// //3.- Calcule para cada categoría:
+// //4.- El monto total acumulado (totalAmount)
+// //5.- La cantidad total acumulada de productos (totalQuantity)
 
-// La función debe retornar un objeto donde cada clave sea el nombre de una categoría y su valor un objeto con las estadísticas calculadas.
+// // La función debe retornar un objeto donde cada clave sea el nombre de una categoría y su valor un objeto con las estadísticas calculadas.
 
-// Ejemplo de salida esperada:
-// {
-//   Groceries: { totalAmount: 125, totalQuantity: 30 },
-//   Clothing: { totalAmount: 100, totalQuantity: 6 }
-// }
+// // Ejemplo de salida esperada:
+// // {
+// //   Groceries: { totalAmount: 125, totalQuanity: 30 },
+// //   Clothing: { totalAmount: 200, totalQuanity: 12 }
+// // }
 
-// Datos de ejemplo
+// // Datos de ejemplo
 // const purchases = [
 //   { category: "Electronics", amount: 200, quantity: 1 },
 //   { category: "Groceries", amount: 50, quantity: 10 },
-//   { category: "Clothing", amount: 100, quantity: 5 },
+//   { category: "Clothing", amount: 100, quantity: 6 },
 //   { category: "Clothing", amount: 100, quantity: 6 },
 //   { category: "Electronics", amount: 150, quantity: 2 },
 //   { category: "Groceries", amount: 75, quantity: 20 },
 // ];
+// const minQuantity = 5;
+// function calculatePurchaseStats(arrPurchases, minQuanty) {
+//   let map = {};
 
-// function calculatePurchaseStats(compras, minCantidad) {
-//   const filterPurchases = compras.filter(
-//     ({ quantity }) => quantity > minCantidad
-//   );
+//   for (const { category, amount, quantity } of arrPurchases) {
+//     if (quantity <= minQuanty) continue;
 
-//   const groupPurchases = filterPurchases.reduce(
-//     (acc, { category, amount, quantity }) => {
-//       acc[category] ??= { TotalAmount: 0, TotalQuantity: 0 };
-//       acc[category].TotalAmount += amount;
-//       acc[category].TotalQuantity += quantity;
-//       return acc;
-//     },
-//     {}
-//   );
+//     map[category] ??= { totalAmount: 0, totalQuanity: 0 };
+//     map[category].totalAmount += amount;
+//     map[category].totalQuanity += quantity;
+//   }
 
-//   return groupPurchases
+//   return map;
 // }
 
-// Ejemplo de uso de la función
-// const minQuantity = 5;
-// const result = calculatePurchaseStats(purchases, minQuantity);
-// console.log(result);
+// const print = calculatePurchaseStats(purchases, minQuantity);
+// console.log(print);
 
 // ****************************************************************
 
 // La empresa desea optimizar los productos que se muestran en la página principal de su tienda en línea. Para ello, se te solicita implementar una función que procese un conjunto de productos y retorne únicamente aquellos que cumplen criterios avanzados de visibilidad comercial.
 
-// La función debe:
-//Filtrar los productos válidos atendiendo a los siguientes criterios:
+// // La función debe:
+// //Filtrar los productos válidos atendiendo a los siguientes criterios:
 
-//1.- El producto debe tener stock disponible (stock > 0).
-//2.- Debe tener una calificación mínima de 4 estrellas (rating >= 4).
-//3.- Su categoría debe estar incluida en una lista de categorías permitidas.
+// //1.- El producto debe tener stock disponible (stock > 0).
+// //2.- Debe tener una calificación mínima de 4 estrellas (rating >= 4).
+// //3.- Su categoría debe estar incluida en una lista de categorías permitidas.
 
-// Adicionalmente, un producto es elegible si:
-//1.- Está marcado como destacado (isFeatured === true), o
-//2.- Su precio es estrictamente menor que un valor máximo establecido.
+// // Adicionalmente, un producto es elegible si:
+// //1.- Está marcado como destacado (isFeatured === true), o
+// //2.- Su precio es estrictamente menor que un valor máximo establecido.
 
-// Agrupar los productos filtrados por categoría, retornando un objeto donde cada clave representa una categoría y su valor es un arreglo con los productos correspondientes.
+// // Agrupar los productos filtrados por categoría, retornando un objeto donde cada clave representa una categoría y su valor es un arreglo con los productos correspondientes.
 
 // const allowedCategories = ["Electronics", "Groceries", "Clothing"];
 // const maxPrice = 100;
@@ -816,8 +805,16 @@
 //   {
 //     id: 2,
 //     category: "Groceries",
-//     price: 5,
-//     rating: 3.5,
+//     price: 90,
+//     rating: 4.2,
+//     stock: 50,
+//     isFeatured: false,
+//   },
+//   {
+//     id: 2,
+//     category: "Alvenis",
+//     price: 90,
+//     rating: 4.2,
 //     stock: 50,
 //     isFeatured: false,
 //   },
@@ -832,8 +829,8 @@
 //   {
 //     id: 4,
 //     category: "Electronics",
-//     price: 199,
-//     rating: 3.8,
+//     price: 80,
+//     rating: 4.1,
 //     stock: 5,
 //     isFeatured: false,
 //   },
@@ -855,32 +852,32 @@
 //   },
 // ];
 
-// function selectProductsToShow(productos, categoriasPermitidas, precioMaximo) {
-//   const filteredProducts = productos.filter(
-//     ({ id, category, price, rating, stock, isFeatured }) => {
-//       return (
-//         stock > 0 &&
-//         rating >= 4 &&
-//         categoriasPermitidas.includes(category) &&
-//         (isFeatured || price < precioMaximo)
-//       );
+// function selectProductToShow(arrProducts, allowedCategory, maxPric) {
+//   const setAllowed = new Set(allowedCategory); // !true --> false, no entra al condicional. Si la categoría no se encuentra me retorna "!false" --> es decir, true y es activa el condicional
+
+//   let map = {};
+
+//   for (const product of arrProducts) {
+//     const { category, price, rating, stock, isFeatured } = product;
+//     if (
+//       stock <= 0 ||
+//       rating < 4 ||
+//       !setAllowed.has(category) ||
+//       (!isFeatured && price > maxPric)
+//     ) {
+//       continue;
 //     }
-//   );
 
-//   // Agrupamos por categorías
-//   const groupProductsCategory = filteredProducts.reduce(
-//     (acc, p) => ({
-//       ...acc,
-//       [p.category]: [...(acc[p.category] || []), p],
-//     }),
-//     {}
-//   );
+//     map[category] ??= [];
+//     map[category].push(product);
+//   }
 
-//   return groupProductsCategory;
+//   return map;
 // }
 
-// const print = selectProductsToShow(products, allowedCategories, maxPrice);
+// const print = selectProductToShow(products, allowedCategories, maxPrice);
 // console.log(print);
+
 
 // ****************************************************************
 // Trabajas en el equipo de backend de una plataforma de e-commerce. El equipo de producto necesita un motor de recomendaciones que sugiera los productos más relevantes a los usuarios basándose en múltiples señales: calidad percibida, comportamiento de compra y estado del inventario.
@@ -1285,12 +1282,12 @@
 
 // Implemente una función que valide si una cadena compuesta por delimitadores —paréntesis (), corchetes [] y llaves {}— está correctamente balanceada y anidada. La solución debe evaluar la correspondencia exacta entre los caracteres de apertura y cierre, asegurando que cada símbolo de cierre coincida en tipo y orden con el último símbolo aún no cerrado. Utilice una estructura tipo stack para mantener el control del flujo de apertura/cierre, garantizando una complejidad temporal O(n). La solución debe ser lo suficientemente robusta para integrarse en un módulo de validación sintáctica utilizado por motores de análisis y sistemas de procesamiento de expresiones estructuradas.
 
-// Por ejemplo:
-// "()" es válido.
-// "()[]{}" es válido.
-// "(]" no es válido.
-// "([)]" no es válido.
-// "{[]}" es válido.
+// // Por ejemplo:
+// // "()" es válido.
+// // "()[]{}" es válido.
+// // "(]" no es válido.
+// // "([)]" no es válido.
+// // "{[]}" es válido.
 
 // const pairs = {
 //   "(": ")",
@@ -1298,40 +1295,14 @@
 //   "{": "}",
 // };
 
-// PRIMERA SOLUCIÓN:
-
-// function isValid(isObjeto, caracteres) {
-//   // Si la longitud es impar, es imposible que sea válida
-//   if (caracteres.length % 2 !== 0) return false;
+// function isValid(map, caracteres) {
 //   let stack = [];
 //   for (let char of caracteres) {
-//     if (char in isObjeto) {
-//       stack = [...stack, char];
-//       continue;
-//     }
-//     const last = stack.at(-1);
-//     if (isObjeto[last] !== char) return false;
-//     stack = stack.slice(0, -1);
-//   }
-
-//   return stack.length === 0;
-// }
-
-// const print = isValid(pairs, "{[]}");
-// console.log(print);
-
-// SEGUNDA SOLUCIÓN:
-
-// function isValid(isObjeto, caracteres) {
-//   if (caracteres.length % 2 !== 0) return false;
-//   let stack = [];
-//   for (let char of caracteres) {
-//     if (char in isObjeto) {
-//       stack.push(char);
+//     if (map[char]) {
+//       stack.push(map[char]);
 //     } else {
-//       const last = stack.at(-1);
-//       if (isObjeto[last] !== char) return false;
-//       stack.pop();
+//       let last = stack.pop();
+//       if (last !== char) return false;
 //     }
 //   }
 
@@ -1340,6 +1311,7 @@
 
 // const print = isValid(pairs, "()[]{}");
 // console.log(print);
+
 
 // ****************************************************************
 

@@ -790,7 +790,7 @@
 
 // // Agrupar los productos filtrados por categoría, retornando un objeto donde cada clave representa una categoría y su valor es un arreglo con los productos correspondientes.
 
-// const allowedCategories = ["Electronics", "Groceries", "Clothing"];
+const allowedCategories = ["Electronics", "Groceries", "Clothing"];
 // const maxPrice = 100;
 // // Datos de ejemplo
 // const products = [
@@ -852,31 +852,55 @@
 //   },
 // ];
 
-// function selectProductToShow(arrProducts, allowedCategory, maxPric) {
-//   const setAllowed = new Set(allowedCategory); // !true --> false, no entra al condicional. Si la categoría no se encuentra me retorna "!false" --> es decir, true y es activa el condicional
+// function groupVisibleProductsByCategory(arrProducts, allowed, priceMax) {
+//   if (!Array.isArray(arrProducts)) {
+//     throw new TypeError(
+//       `Expected product to be an array, got ${JSON.stringify(arrProducts)}`,
+//     );
+//   }
 
-//   let map = {};
-
+//   const setAllowed = new Set(allowed);
+//   const seedIds = new Set();
+//   const grouped = {};
 //   for (const product of arrProducts) {
-//     const { category, price, rating, stock, isFeatured } = product;
+//     const { id, category, price, rating, stock, isFeatured } = product;
+
+//     if (seedIds.has(id)) {
+//       console.warn(`Duplicated product id detected: ${id}`);
+//     }
+//     seedIds.add(id);
+
+//     const isOutOfStock = stock <= 0;
+//     const isBelowRatingMin = rating < 4;
+//     const isInvalidCategory = !setAllowed.has(category);
+//     const exceedsPriceLimit = !isFeatured && price >= priceMax;
+
 //     if (
-//       stock <= 0 ||
-//       rating < 4 ||
-//       !setAllowed.has(category) ||
-//       (!isFeatured && price > maxPric)
+//       isOutOfStock ||
+//       isBelowRatingMin ||
+//       isInvalidCategory ||
+//       exceedsPriceLimit
 //     ) {
 //       continue;
 //     }
 
-//     map[category] ??= [];
-//     map[category].push(product);
+//     grouped[category] ??= [];
+//     grouped[category].push(product);
 //   }
 
-//   return map;
+//   return grouped;
 // }
 
-// const print = selectProductToShow(products, allowedCategories, maxPrice);
-// console.log(print);
+// try {
+//   const print = groupVisibleProductsByCategory(
+//     products,
+//     allowedCategories,
+//     maxPrice,
+//   );
+//   console.log(print);
+// } catch (err) {
+//   console.error(`Error: ${err.message}`);
+// }
 
 
 // ****************************************************************
